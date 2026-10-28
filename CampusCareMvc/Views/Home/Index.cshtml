@@ -1,0 +1,79 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<section class="hero-section">
+    <div class="hero-copy">
+        <span class="eyebrow"><span class="eyebrow-dot"></span> CAMPUS OPERATIONS</span>
+        <h1>A better campus<br /><span>starts with a report.</span></h1>
+        <p>Report maintenance issues, follow progress, and help keep every campus space working at its best.</p>
+        <div class="hero-actions">
+            <a class="btn btn-mint btn-lg" asp-controller="Complaints" asp-action="Create">Report an issue <span aria-hidden="true">↗</span></a>
+            <a class="btn btn-outline-light btn-lg" asp-controller="Complaints" asp-action="Index">View all tickets</a>
+        </div>
+    </div>
+    <div class="hero-illustration" aria-hidden="true">
+        <div class="hero-orbit orbit-one"></div>
+        <div class="hero-orbit orbit-two"></div>
+        <div class="hero-stamp"><span>✓</span><small>CARE<br />IN ACTION</small></div>
+        <div class="hero-note note-top"><span class="note-icon icon-lime">↗</span><span><b>Report</b><small>Tell us what needs fixing</small></span></div>
+        <div class="hero-note note-bottom"><span class="note-icon icon-cyan">✓</span><span><b>Resolve</b><small>Track progress in one place</small></span></div>
+    </div>
+</section>
+
+<section class="stats-grid" aria-label="Complaint summary">
+    <article class="stat-card stat-total">
+        <div class="stat-top"><span>Total reports</span><span class="stat-symbol">▤</span></div>
+        <strong>@Model.TotalCount</strong>
+        <small>All reported campus issues</small>
+    </article>
+    <article class="stat-card stat-open">
+        <div class="stat-top"><span>Submitted</span><span class="stat-symbol">◷</span></div>
+        <strong>@Model.SubmittedCount</strong>
+        <small>Waiting for review</small>
+    </article>
+    <article class="stat-card stat-progress">
+        <div class="stat-top"><span>In progress</span><span class="stat-symbol">↻</span></div>
+        <strong>@Model.InProgressCount</strong>
+        <small>Currently being handled</small>
+    </article>
+    <article class="stat-card stat-done">
+        <div class="stat-top"><span>Resolved / closed</span><span class="stat-symbol">✓</span></div>
+        <strong>@Model.ResolvedCount</strong>
+        <small>Issues marked complete</small>
+    </article>
+</section>
+
+<section class="content-section">
+    <div class="section-heading">
+        <div><span class="eyebrow">LATEST ACTIVITY</span><h2>Recently reported issues</h2><p>Stay up to date with the latest campus reports.</p></div>
+        <a class="text-link" asp-controller="Complaints" asp-action="Index">See all complaints <span aria-hidden="true">→</span></a>
+    </div>
+
+    @if (Model.RecentComplaints.Count == 0)
+    {
+        <div class="empty-state"><div class="empty-symbol">＋</div><h3>No issues reported yet</h3><p>Be the first to report a campus maintenance issue.</p><a class="btn btn-mint" asp-controller="Complaints" asp-action="Create">Create first report</a></div>
+    }
+    else
+    {
+        <div class="table-responsive surface-table">
+            <table class="table align-middle mb-0">
+                <thead><tr><th>Ticket / Issue</th><th>Category</th><th>Priority</th><th>Status</th><th>Reported</th><th></th></tr></thead>
+                <tbody>
+                @foreach (var item in Model.RecentComplaints)
+                {
+                    <tr>
+                        <td><div class="issue-cell"><span class="ticket-code">@item.TicketNumber</span><a class="issue-title" asp-controller="Complaints" asp-action="Details" asp-route-id="@item.Id">@item.Title</a><small>@item.Location</small></div></td>
+                        <td>@item.Category.ToDisplayName()</td>
+                        <td><span class="priority-pill priority-@item.Priority.ToString().ToLowerInvariant()">@item.Priority.ToDisplayName()</span></td>
+                        <td><span class="status-pill status-@item.Status.ToString().ToLowerInvariant()">@item.Status.ToDisplayName()</span></td>
+                        <td class="date-cell">@item.DateReported.ToString("dd MMM yyyy")</td>
+                        <td><a class="icon-link" asp-controller="Complaints" asp-action="Details" asp-route-id="@item.Id" aria-label="View @item.TicketNumber">↗</a></td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

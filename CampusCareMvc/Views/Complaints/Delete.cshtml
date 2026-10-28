@@ -1,0 +1,18 @@
+@model Complaint
+@{
+    ViewData["Title"] = "Delete complaint";
+}
+
+<section class="simple-page delete-page">
+    <div class="delete-icon">!</div>
+    <span class="eyebrow">CONFIRM ACTION</span>
+    <h1>Delete this complaint?</h1>
+    <p class="delete-warning">This permanently removes the ticket from the database. This action cannot be undone.</p>
+    <div class="delete-summary"><span class="ticket-code">@Model.TicketNumber</span><h2>@Model.Title</h2><p>@Model.Location</p><span class="status-pill status-@Model.Status.ToString().ToLowerInvariant()">@Model.Status.ToDisplayName()</span></div>
+    <form asp-action="Delete" method="post" class="delete-actions">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@Model.Id" />
+        <a class="btn btn-outline-secondary" asp-action="Details" asp-route-id="@Model.Id">Cancel</a>
+        <button type="submit" class="btn btn-danger">Yes, delete ticket</button>
+    </form>
+</section>

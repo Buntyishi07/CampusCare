@@ -1,0 +1,33 @@
+@model Complaint
+@{
+    ViewData["Title"] = "Edit complaint";
+}
+
+<section class="page-heading">
+    <div><span class="eyebrow">UPDATE EXISTING TICKET</span><h1>Edit complaint</h1><p>Update the issue details or change its progress status.</p></div>
+    <a class="back-link" asp-action="Details" asp-route-id="@Model.Id">← Back to ticket</a>
+</section>
+
+<div class="edit-ticket-bar"><span class="ticket-code">@Model.TicketNumber</span><span>Reported @Model.DateReported.ToString("dd MMM yyyy, hh:mm tt")</span></div>
+<form asp-action="Edit" asp-route-id="@Model.Id" method="post" class="form-surface">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <div asp-validation-summary="ModelOnly" class="validation-summary text-danger mb-3"></div>
+    <div class="form-section-title"><span class="form-step">01</span><div><h2>Issue details</h2><p>Keep the description and location accurate.</p></div></div>
+    <div class="row g-4">
+        <div class="col-12"><label asp-for="Title" class="form-label"></label><input asp-for="Title" class="form-control" /><span asp-validation-for="Title" class="field-error"></span></div>
+        <div class="col-12"><label asp-for="Description" class="form-label"></label><textarea asp-for="Description" class="form-control" rows="4"></textarea><span asp-validation-for="Description" class="field-error"></span></div>
+        <div class="col-12 col-md-6"><label asp-for="Category" class="form-label"></label><select asp-for="Category" asp-items="Html.GetEnumSelectList<IssueCategory>()" class="form-select"></select><span asp-validation-for="Category" class="field-error"></span></div>
+        <div class="col-12 col-md-6"><label asp-for="Priority" class="form-label"></label><select asp-for="Priority" asp-items="Html.GetEnumSelectList<IssuePriority>()" class="form-select"></select><span asp-validation-for="Priority" class="field-error"></span></div>
+        <div class="col-12 col-md-6"><label asp-for="Status" class="form-label"></label><select asp-for="Status" asp-items="Html.GetEnumSelectList<IssueStatus>()" class="form-select"></select><span asp-validation-for="Status" class="field-error"></span><div class="form-hint">Use this field to record progress.</div></div>
+        <div class="col-12 col-md-6"><label asp-for="Location" class="form-label"></label><input asp-for="Location" class="form-control" /><span asp-validation-for="Location" class="field-error"></span></div>
+    </div>
+    <div class="form-section-title section-title-spaced"><span class="form-step">02</span><div><h2>Reporter details</h2><p>Contact information for follow-up.</p></div></div>
+    <div class="row g-4">
+        <div class="col-12 col-md-6"><label asp-for="ReporterName" class="form-label"></label><input asp-for="ReporterName" class="form-control" /><span asp-validation-for="ReporterName" class="field-error"></span></div>
+        <div class="col-12 col-md-6"><label asp-for="ReporterEmail" class="form-label"></label><input asp-for="ReporterEmail" class="form-control" /><span asp-validation-for="ReporterEmail" class="field-error"></span></div>
+    </div>
+    <div class="form-footer"><span>Last updated: @Model.UpdatedAt.ToString("dd MMM yyyy, hh:mm tt")</span><div class="d-flex gap-2"><a class="btn btn-outline-secondary" asp-action="Details" asp-route-id="@Model.Id">Cancel</a><button type="submit" class="btn btn-mint">Save changes <span aria-hidden="true">→</span></button></div></div>
+</form>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

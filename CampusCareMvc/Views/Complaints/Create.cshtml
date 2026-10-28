@@ -1,0 +1,32 @@
+@model Complaint
+@{
+    ViewData["Title"] = "Report an issue";
+}
+
+<section class="page-heading">
+    <div><span class="eyebrow">NEW CAMPUS REPORT</span><h1>Report an issue</h1><p>Give the maintenance team enough detail to understand and address the problem.</p></div>
+    <a class="back-link" asp-action="Index">← Back to complaints</a>
+</section>
+
+<form asp-action="Create" method="post" class="form-surface">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="validation-summary text-danger mb-3"></div>
+    <div class="form-section-title"><span class="form-step">01</span><div><h2>Issue details</h2><p>What happened and where did it happen?</p></div></div>
+    <div class="row g-4">
+        <div class="col-12"><label asp-for="Title" class="form-label"></label><input asp-for="Title" class="form-control" placeholder="e.g. Projector is not turning on" /><span asp-validation-for="Title" class="field-error"></span></div>
+        <div class="col-12"><label asp-for="Description" class="form-label"></label><textarea asp-for="Description" class="form-control" rows="4" placeholder="Describe what you noticed, when it started, and any helpful details..."></textarea><span asp-validation-for="Description" class="field-error"></span><div class="form-hint">Please enter at least 15 characters.</div></div>
+        <div class="col-12 col-md-6"><label asp-for="Category" class="form-label"></label><select asp-for="Category" asp-items="Html.GetEnumSelectList<IssueCategory>()" class="form-select"><option value="">Select a category</option></select><span asp-validation-for="Category" class="field-error"></span></div>
+        <div class="col-12 col-md-6"><label asp-for="Priority" class="form-label"></label><select asp-for="Priority" asp-items="Html.GetEnumSelectList<IssuePriority>()" class="form-select"><option value="">Choose priority</option></select><span asp-validation-for="Priority" class="field-error"></span></div>
+        <div class="col-12"><label asp-for="Location" class="form-label"></label><input asp-for="Location" class="form-control" placeholder="e.g. Block A, Room 204" /><span asp-validation-for="Location" class="field-error"></span></div>
+    </div>
+
+    <div class="form-section-title section-title-spaced"><span class="form-step">02</span><div><h2>Your details</h2><p>The maintenance team can contact you if more information is needed.</p></div></div>
+    <div class="row g-4">
+        <div class="col-12 col-md-6"><label asp-for="ReporterName" class="form-label"></label><input asp-for="ReporterName" class="form-control" placeholder="Your full name" /><span asp-validation-for="ReporterName" class="field-error"></span></div>
+        <div class="col-12 col-md-6"><label asp-for="ReporterEmail" class="form-label"></label><input asp-for="ReporterEmail" class="form-control" placeholder="you@college.edu" /><span asp-validation-for="ReporterEmail" class="field-error"></span></div>
+    </div>
+
+    <div class="form-footer"><span><span class="required-star">*</span> Required fields are validated before submission.</span><div class="d-flex gap-2"><a class="btn btn-outline-secondary" asp-action="Index">Cancel</a><button type="submit" class="btn btn-mint">Submit report <span aria-hidden="true">→</span></button></div></div>
+</form>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

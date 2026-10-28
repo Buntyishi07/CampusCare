@@ -1,0 +1,61 @@
+@model ComplaintIndexViewModel
+@{
+    ViewData["Title"] = "All complaints";
+}
+
+<section class="page-heading">
+    <div><span class="eyebrow">CAMPUS ISSUE REGISTER</span><h1>All complaints</h1><p>Search reports, filter by status, and open a ticket for its full details.</p></div>
+    <a class="btn btn-mint" asp-action="Create">+ New complaint</a>
+</section>
+
+<section class="filter-panel">
+    <form asp-action="Index" method="get" class="row g-3 align-items-end">
+        <div class="col-12 col-lg-5"><label class="form-label" for="searchTerm">Search</label><input class="form-control" id="searchTerm" name="searchTerm" value="@Model.SearchTerm" placeholder="Ticket, issue, location, reporter..." /></div>
+        <div class="col-12 col-sm-6 col-lg-2"><label class="form-label" for="status">Status</label><select class="form-select" id="status" name="status"><option value="">All statuses</option>@foreach (var statusOption in Enum.GetValues<IssueStatus>()) { <option value="@statusOption" selected="@(Model.SelectedStatus == statusOption ? "selected" : null)">@statusOption.ToDisplayName()</option> }</select></div>
+        <div class="col-12 col-sm-6 col-lg-3"><label class="form-label" for="category">Category</label><select class="form-select" id="category" name="category"><option value="">All categories</option>@foreach (var categoryOption in Enum.GetValues<IssueCategory>()) { <option value="@categoryOption" selected="@(Model.SelectedCategory == categoryOption ? "selected" : null)">@categoryOption.ToDisplayName()</option> }</select></div>
+        <div class="col-6 col-lg-1 d-grid"><button type="submit" class="btn btn-dark">Apply</button></div>
+        <div class="col-6 col-lg-1 d-grid"><a asp-action="Index" class="btn btn-outline-secondary">Reset</a></div>
+    </form>
+</section>
+
+<div class="list-heading"><h2>Issue register <span class="result-count">@Model.Complaints.Count</span></h2><span class="muted-small">Showing matching tickets</span></div>
+
+@if (Model.Complaints.Count == 0)
+{
+    <div class="empty-state"><div class="empty-symbol">⌕</div><h3>No matching complaints</h3><p>Try changing your search or filters, or submit a new report.</p><a class="btn btn-mint" asp-action="Create">Report an issue</a></div>
+}
+else
+{
+    <div class="table-responsive surface-table">
+        <table class="table align-middle mb-0">
+            <thead><tr><th>Ticket / Issue</th><th>Category</th><th>Priority</th><th>Status</th><th>Reporter</th><th>Reported on</th><th></th></tr></thead>
+            <tbody>
+            @foreach (var item in Model.Complaints)
+            {
+                <tr>
+                    <td><div class="issue-cell"><span class="ticket-code">@item.TicketNumber</span><a class="issue-title" asp-action="Details" asp-route-id="@item.Id">@item.Title</a><small>@item.Location</small></div></td>
+                    <td>@item.Category.ToDisplayName()</td>
+                    <td><span class="priority-pill priority-@item.Priority.ToString().ToLowerInvariant()">@item.Priority.ToDisplayName()</span></td>
+                    <td><span class="status-pill status-@item.Status.ToString().ToLowerInvariant()">@item.Status.ToDisplayName()</span></td>
+                    <td><div class="reporter-cell">@item.ReporterName<small>@item.ReporterEmail</small></div></td>
+                    <td class="date-cell">@item.DateReported.ToString("dd MMM yyyy")</td>
+                    <td><a class="icon-link" asp-action="Details" asp-route-id="@item.Id" aria-label="View @item.TicketNumber">↗</a></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+
+@if (Model.RecentlyViewed.Count > 0)
+{
+    <section class="recently-viewed-section">
+        <div class="section-heading compact-heading"><div><span class="eyebrow">SESSION MEMORY</span><h2>Recently viewed by you</h2><p>This list is remembered in your browser session for up to 30 minutes.</p></div></div>
+        <div class="recently-viewed-list">
+            @foreach (var item in Model.RecentlyViewed)
+            {
+                <a class="recent-item" asp-action="Details" asp-route-id="@item.Id"><span class="recent-item-icon">↗</span><span><small>@item.TicketNumber</small><b>@item.Title</b></span><span class="recent-arrow">→</span></a>
+            }
+        </div>
+    </section>
+}

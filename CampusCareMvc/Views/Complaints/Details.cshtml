@@ -1,0 +1,28 @@
+@model Complaint
+@{
+    ViewData["Title"] = "Complaint details";
+    var statusClass = $"status-{Model.Status.ToString().ToLowerInvariant()}";
+    var priorityClass = $"priority-{Model.Priority.ToString().ToLowerInvariant()}";
+}
+
+<section class="page-heading">
+    <div><span class="eyebrow">TICKET DETAILS</span><h1>@Model.Title</h1><p>Review the issue information and its current status.</p></div>
+    <a class="back-link" asp-action="Index">← Back to all complaints</a>
+</section>
+
+<div class="detail-layout">
+    <section class="detail-main">
+        <div class="detail-ticket-head"><div><span class="ticket-code">@Model.TicketNumber</span><span class="detail-subtitle">Submitted @Model.DateReported.ToString("dd MMM yyyy, hh:mm tt")</span></div><span class="status-pill @statusClass">@Model.Status.ToDisplayName()</span></div>
+        <div class="detail-description"><h2>Issue description</h2><p>@Model.Description</p></div>
+        <div class="detail-facts">
+            <div><span>Category</span><strong>@Model.Category.ToDisplayName()</strong></div>
+            <div><span>Priority</span><strong><span class="priority-pill @priorityClass">@Model.Priority.ToDisplayName()</span></strong></div>
+            <div><span>Campus location</span><strong>@Model.Location</strong></div>
+            <div><span>Last updated</span><strong>@Model.UpdatedAt.ToString("dd MMM yyyy, hh:mm tt")</strong></div>
+        </div>
+        <div class="detail-actions"><a class="btn btn-mint" asp-action="Edit" asp-route-id="@Model.Id">Edit complaint <span aria-hidden="true">↗</span></a><a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model.Id">Delete ticket</a></div>
+    </section>
+    <aside class="reporter-panel">
+        <span class="eyebrow">REPORTED BY</span><div class="reporter-avatar">@Model.ReporterName.Trim().Substring(0, 1).ToUpperInvariant()</div><h2>@Model.ReporterName</h2><a href="mailto:@Model.ReporterEmail">@Model.ReporterEmail</a><div class="reporter-divider"></div><div class="reporter-note"><span>ⓘ</span><p>Reporter details are stored with the ticket so the team can follow up if further information is needed.</p></div>
+    </aside>
+</div>
